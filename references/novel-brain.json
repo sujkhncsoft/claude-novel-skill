@@ -1,0 +1,592 @@
+{
+  "$schema": "novel-brain-schema-v1.0.0",
+  "_comment": "소설 프로젝트 추적 데이터 중앙 허브. /novel init 시 프로젝트 루트에 복사됨.",
+
+  "metadata": {
+    "title": "",
+    "subtitle": "",
+    "author": "",
+    "genre": "",
+    "subGenre": [],
+    "logline": "",
+    "targetLength": {
+      "type": "장편",
+      "estimatedWords": 100000,
+      "estimatedChapters": 30
+    },
+    "targetAudience": "",
+    "createdAt": "",
+    "lastModified": "",
+    "currentVersion": "0.1.0",
+    "status": "기획"
+  },
+
+  "settings": {
+    "aiCollaborationMode": "collaborative",
+    "language": "ko",
+    "pov": "3인칭 제한",
+    "tense": "과거형",
+    "chapterNamingScheme": "numbered",
+    "autoSave": true,
+    "validationLevel": "standard",
+    "writingSessionGoal": {
+      "dailyWords": 2000,
+      "sessionMinutes": 120
+    }
+  },
+
+  "genrePreset": {
+    "selectedGenre": "",
+    "activeRules": [],
+    "tropeWatchlist": [],
+    "clicheAlerts": [],
+    "genreMixRatio": {},
+    "readerExpectations": [],
+    "mandatoryElements": [],
+    "forbiddenElements": []
+  },
+
+  "aiAssistant": {
+    "role": "collaborative_writer",
+    "permissions": {
+      "canSuggestPlot": true,
+      "canWriteDraft": true,
+      "canEditProse": true,
+      "canCreateCharacters": false,
+      "canKillCharacters": false,
+      "canChangeWorldRules": false
+    },
+    "styleGuide": {
+      "toneKeywords": [],
+      "avoidKeywords": [],
+      "referenceAuthors": [],
+      "sentenceLengthPreference": "mixed",
+      "dialogueStyle": "natural"
+    },
+    "contextWindow": {
+      "alwaysInclude": ["metadata", "activeScene", "relevantCharacters"],
+      "includeOnRequest": ["fullWorldState", "allForeshadowing"],
+      "maxContextChapters": 3
+    }
+  },
+
+  "characterTracking": {
+    "characters": {},
+    "_characterTemplate": {
+      "id": "",
+      "name": "",
+      "aliases": [],
+      "role": "주인공/조연/적대자/배경",
+      "archetype": "",
+      "age": null,
+      "appearance": {
+        "height": "",
+        "build": "",
+        "hair": "",
+        "eyes": "",
+        "distinguishingFeatures": []
+      },
+      "personality": {
+        "mbti": "",
+        "coreTraits": [],
+        "flaws": [],
+        "fears": [],
+        "desires": [],
+        "values": []
+      },
+      "background": {
+        "birthplace": "",
+        "education": "",
+        "occupation": "",
+        "keyEvents": []
+      },
+      "arc": {
+        "startState": "",
+        "endState": "",
+        "turningPoints": [],
+        "currentPhase": "",
+        "progressPercent": 0
+      },
+      "relationships": {},
+      "voice": {
+        "speechPattern": "",
+        "vocabulary": "",
+        "catchphrases": [],
+        "dialectOrAccent": ""
+      },
+      "inventory": [],
+      "knowledge": [],
+      "lastSeenChapter": null,
+      "lastSeenScene": null,
+      "appearanceCount": 0,
+      "emotionalState": "",
+      "notes": ""
+    },
+    "relationshipMap": [],
+    "factionMap": {}
+  },
+
+  "plotTracking": {
+    "structure": {
+      "type": "3막",
+      "acts": [],
+      "currentAct": 1,
+      "currentChapter": 1,
+      "currentScene": 1
+    },
+    "mainPlot": {
+      "premise": "",
+      "centralConflict": "",
+      "stakes": "",
+      "climaxPlan": "",
+      "resolution": ""
+    },
+    "subplots": [],
+    "_subplotTemplate": {
+      "id": "",
+      "name": "",
+      "type": "캐릭터/로맨스/미스터리/사회/주제",
+      "involvedCharacters": [],
+      "startChapter": null,
+      "peakChapter": null,
+      "resolveChapter": null,
+      "status": "계획/진행/정점/해소/보류",
+      "connectionToMainPlot": ""
+    },
+    "foreshadowing": [],
+    "_foreshadowTemplate": {
+      "id": "",
+      "description": "",
+      "plantedIn": { "chapter": null, "scene": null, "line": "" },
+      "payoffIn": { "chapter": null, "scene": null, "line": "" },
+      "type": "직접/간접/구조적/상징적",
+      "subtlety": "명시적/암시적/잠재적",
+      "status": "심기완료/단서추가/회수예정/회수완료/폐기",
+      "relatedCharacters": [],
+      "relatedItems": [],
+      "notes": ""
+    },
+    "threads": [],
+    "chapterOutlines": [],
+    "_chapterOutlineTemplate": {
+      "chapter": null,
+      "title": "",
+      "summary": "",
+      "scenes": [],
+      "pov": "",
+      "timespan": "",
+      "location": "",
+      "plotAdvancement": "",
+      "characterDevelopment": "",
+      "foreshadowingPlanted": [],
+      "foreshadowingPayoff": [],
+      "endingHook": "",
+      "status": "계획/초안/수정/완료",
+      "wordCount": 0
+    }
+  },
+
+  "worldState": {
+    "name": "",
+    "type": "현실/판타지/SF/대체역사/혼합",
+    "era": "",
+    "technologyLevel": "",
+    "rules": {
+      "physics": [],
+      "magic": [],
+      "social": [],
+      "economic": [],
+      "restrictions": []
+    },
+    "locations": {},
+    "_locationTemplate": {
+      "id": "",
+      "name": "",
+      "type": "",
+      "parentLocation": "",
+      "description": "",
+      "sensory": {
+        "sight": [],
+        "sound": [],
+        "smell": [],
+        "touch": [],
+        "taste": []
+      },
+      "significance": "",
+      "currentOccupants": [],
+      "connectedLocations": [],
+      "firstAppearance": null
+    },
+    "factions": [],
+    "cultures": [],
+    "calendar": {
+      "system": "",
+      "currentDate": "",
+      "importantDates": []
+    },
+    "currentGlobalState": {
+      "politicalSituation": "",
+      "majorEvents": [],
+      "season": "",
+      "timeOfDay": ""
+    }
+  },
+
+  "itemTracking": {
+    "items": {},
+    "_itemTemplate": {
+      "id": "",
+      "name": "",
+      "type": "무기/도구/열쇠/문서/의복/음식/화폐/마법물품/기타",
+      "description": "",
+      "significance": "핵심/중요/일반/배경",
+      "properties": {
+        "physical": "",
+        "magical": "",
+        "historical": ""
+      },
+      "currentOwner": "",
+      "currentLocation": "",
+      "stateHistory": [],
+      "relatedForeshadowing": [],
+      "firstAppearance": { "chapter": null, "scene": null },
+      "lastMentioned": { "chapter": null, "scene": null },
+      "status": "정상/파손/분실/파괴/변형/봉인"
+    },
+    "activeInCurrentScene": [],
+    "itemStates": {
+      "_comment": "씬 단위 아이템 위치/상태 스냅샷",
+      "snapshots": []
+    },
+    "inventoryByCharacter": {}
+  },
+
+  "themeTracking": {
+    "themes": [],
+    "_themeTemplate": {
+      "id": "",
+      "name": "",
+      "statement": "",
+      "type": "주제/부주제",
+      "explorationMethod": "",
+      "chapterPresence": {},
+      "strengthByChapter": [],
+      "relatedCharacters": [],
+      "relatedSubplots": [],
+      "counterTheme": ""
+    },
+    "motifs": [],
+    "_motifTemplate": {
+      "id": "",
+      "name": "",
+      "description": "",
+      "associatedTheme": "",
+      "occurrences": [],
+      "evolution": ""
+    },
+    "symbols": [],
+    "_symbolTemplate": {
+      "id": "",
+      "name": "",
+      "represents": "",
+      "firstAppearance": null,
+      "occurrences": [],
+      "transformations": []
+    },
+    "currentAnalysis": {
+      "dominantTheme": "",
+      "underrepresentedThemes": [],
+      "thematicBalance": "",
+      "recommendations": []
+    }
+  },
+
+  "knowledgeMatrix": {
+    "_comment": "캐릭터(행) x 정보(열) 그리드. 각 셀은 해당 캐릭터가 해당 정보를 아는지 여부.",
+    "informationItems": [],
+    "_informationTemplate": {
+      "id": "",
+      "description": "",
+      "revealedInChapter": null,
+      "revealedInScene": null,
+      "importance": "핵심/중요/일반",
+      "type": "비밀/사실/거짓정보/오해"
+    },
+    "characterKnowledge": {},
+    "readerAwareness": {
+      "_comment": "독자가 현재 알고 있는 정보 목록. 드라마틱 아이러니 설계에 활용.",
+      "knownInformation": [],
+      "suspectedInformation": [],
+      "unknownCritical": []
+    },
+    "dramaticIrony": [],
+    "_dramaticIronyTemplate": {
+      "id": "",
+      "information": "",
+      "readerKnows": true,
+      "charactersWhoKnow": [],
+      "charactersWhoDontKnow": [],
+      "intendedEffect": "",
+      "resolutionPlan": ""
+    }
+  },
+
+  "proseAnalysis": {
+    "rhetoricDensity": {
+      "metaphorCount": 0,
+      "simileCount": 0,
+      "personificationCount": 0,
+      "densityPerThousandWords": 0,
+      "recommendation": ""
+    },
+    "sentenceRhythm": {
+      "averageLength": 0,
+      "shortRatio": 0,
+      "mediumRatio": 0,
+      "longRatio": 0,
+      "varietyScore": 0
+    },
+    "clicheAlerts": [],
+    "repetitionAlerts": [],
+    "readabilityScore": 0,
+    "dialogueToNarrativeRatio": 0,
+    "showVsTellRatio": 0,
+    "sensoryDetailDensity": 0,
+    "adverbFrequency": 0,
+    "passiveVoiceRatio": 0,
+    "uniqueWordRatio": 0,
+    "styleConsistencyScore": 0
+  },
+
+  "serializationTracking": {
+    "enabled": false,
+    "platform": "",
+    "schedule": {
+      "frequency": "",
+      "publishDays": [],
+      "publishTime": ""
+    },
+    "buffer": {
+      "targetCount": 5,
+      "currentCount": 0,
+      "episodes": []
+    },
+    "productionSpeed": {
+      "wordsPerDay": 0,
+      "episodesPerWeek": 0,
+      "averageEpisodeLength": 0
+    },
+    "monetizationModel": {
+      "type": "무료/부분유료/유료/후원",
+      "freeEpisodes": 0,
+      "paidEpisodes": 0,
+      "pricePerEpisode": 0
+    },
+    "readerMetrics": {
+      "subscribers": 0,
+      "averageViews": 0,
+      "retentionRate": 0,
+      "favoriteCount": 0,
+      "commentsPerEpisode": 0
+    },
+    "episodeHistory": []
+  },
+
+  "publishingPipeline": {
+    "status": "집필중/탈고/퇴고/투고준비/투고중/계약/출간",
+    "submissions": [],
+    "_submissionTemplate": {
+      "id": "",
+      "target": "",
+      "type": "출판사/공모전/문학상/에이전시",
+      "submittedDate": "",
+      "deadline": "",
+      "status": "준비/제출/심사중/1차통과/최종심/당선/탈락/계약",
+      "requirements": {
+        "format": "",
+        "maxWords": null,
+        "genre": "",
+        "additionalDocs": []
+      },
+      "result": "",
+      "feedback": "",
+      "notes": ""
+    },
+    "contests": [],
+    "manuscriptFormats": {
+      "standard": { "fontSize": 10, "font": "바탕", "lineSpacing": 1.6, "paperSize": "A4" },
+      "webNovel": { "fontSize": 14, "font": "Pretendard", "lineSpacing": 1.8 },
+      "ebook": { "format": "epub", "coverRequired": true }
+    },
+    "synopsis": {
+      "oneLiner": "",
+      "shortSynopsis": "",
+      "fullSynopsis": "",
+      "queryLetter": ""
+    },
+    "betaReaders": [],
+    "editingRounds": []
+  },
+
+  "structureTracking": {
+    "totalWordCount": 0,
+    "completedChapters": 0,
+    "completedScenes": 0,
+    "progressPercent": 0,
+    "dailyLog": [],
+    "_dailyLogTemplate": {
+      "date": "",
+      "wordsWritten": 0,
+      "chaptersWorked": [],
+      "scenesCompleted": [],
+      "timeSpentMinutes": 0,
+      "notes": ""
+    },
+    "milestones": [],
+    "deadlines": []
+  },
+
+  "narrativeModels": {
+    "threeAct": {
+      "act1_setup": { "percent": 25, "chapters": [] },
+      "act2_confrontation": { "percent": 50, "chapters": [] },
+      "act3_resolution": { "percent": 25, "chapters": [] }
+    },
+    "fiveAct": {
+      "exposition": { "percent": 10, "chapters": [] },
+      "risingAction": { "percent": 20, "chapters": [] },
+      "climax": { "percent": 20, "chapters": [] },
+      "fallingAction": { "percent": 25, "chapters": [] },
+      "denouement": { "percent": 25, "chapters": [] }
+    },
+    "kishotenketsu": {
+      "ki_introduction": { "percent": 25, "chapters": [] },
+      "sho_development": { "percent": 25, "chapters": [] },
+      "ten_twist": { "percent": 25, "chapters": [] },
+      "ketsu_conclusion": { "percent": 25, "chapters": [] }
+    },
+    "herosJourney": {
+      "stages": [
+        "일상 세계", "모험의 소명", "소명의 거부", "멘토와의 만남",
+        "첫 관문 통과", "시련/동맹/적", "가장 깊은 동굴 접근",
+        "시련", "보상", "귀환의 길", "부활", "영약과 귀환"
+      ],
+      "currentStage": 0,
+      "stageMapping": {}
+    }
+  },
+
+  "actantialModel": {
+    "subject": "",
+    "object": "",
+    "sender": "",
+    "receiver": "",
+    "helper": [],
+    "opponent": []
+  },
+
+  "automations": {
+    "onSceneStart": [
+      "캐릭터 인벤토리 로드",
+      "위치 감각 데이터 로드",
+      "활성 복선 목록 표시",
+      "독자 지식 상태 확인"
+    ],
+    "onSceneEnd": [
+      "아이템 위치 업데이트",
+      "캐릭터 감정 상태 업데이트",
+      "복선 추적기 업데이트",
+      "지식 매트릭스 업데이트",
+      "단어 수 기록"
+    ],
+    "onChapterEnd": [
+      "챕터 아웃라인 대비 검증",
+      "텐션 곡선 업데이트",
+      "캐릭터 등장 빈도 확인",
+      "테마 반영도 확인"
+    ],
+    "weeklyReview": [
+      "전체 진행도 대시보드 생성",
+      "미회수 복선 경고",
+      "소외 캐릭터 경고",
+      "일관성 검증 실행"
+    ]
+  },
+
+  "validation": {
+    "rules": [
+      {
+        "id": "char-consistency",
+        "name": "캐릭터 일관성",
+        "description": "캐릭터 행동이 프로필(성격, 가치관)과 일치하는지 검증",
+        "severity": "error",
+        "enabled": true
+      },
+      {
+        "id": "item-location",
+        "name": "아이템 위치 일관성",
+        "description": "아이템의 현재 위치/소유자가 논리적으로 유효한지 검증",
+        "severity": "error",
+        "enabled": true
+      },
+      {
+        "id": "timeline",
+        "name": "시간축 일관성",
+        "description": "사건 순서와 경과 시간이 논리적인지 검증",
+        "severity": "error",
+        "enabled": true
+      },
+      {
+        "id": "geography",
+        "name": "지리 일관성",
+        "description": "이동 거리/시간이 세계관 지리와 일치하는지 검증",
+        "severity": "warning",
+        "enabled": true
+      },
+      {
+        "id": "world-rules",
+        "name": "세계관 규칙 준수",
+        "description": "마법/기술/사회 규칙 위반 여부 검증",
+        "severity": "error",
+        "enabled": true
+      },
+      {
+        "id": "foreshadow-orphan",
+        "name": "고아 복선 감지",
+        "description": "심었지만 회수 계획이 없는 복선 경고",
+        "severity": "warning",
+        "enabled": true
+      },
+      {
+        "id": "knowledge-leak",
+        "name": "지식 누수 감지",
+        "description": "캐릭터가 아직 모르는 정보를 언급하는 경우 감지",
+        "severity": "error",
+        "enabled": true
+      },
+      {
+        "id": "theme-balance",
+        "name": "테마 균형",
+        "description": "주제가 특정 구간에 편중되지 않았는지 검증",
+        "severity": "info",
+        "enabled": true
+      },
+      {
+        "id": "pacing-monotony",
+        "name": "페이싱 단조로움",
+        "description": "텐션이 3장 이상 동일 수준 유지 시 경고",
+        "severity": "warning",
+        "enabled": true
+      },
+      {
+        "id": "cliche-density",
+        "name": "클리셰 밀도",
+        "description": "장당 클리셰 표현 비율이 임계치 초과 시 경고",
+        "severity": "info",
+        "enabled": true
+      }
+    ],
+    "lastValidationRun": null,
+    "validationHistory": []
+  }
+}
