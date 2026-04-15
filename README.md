@@ -34,7 +34,48 @@ novel/
     image-prompts.md         -- 이미지 생성 프롬프트
     creative-prompts.md      -- 창작 프롬프트
     templates/project/       -- 프로젝트 초기화 템플릿
+  novel-agent/               -- LangGraph + go.md 자율 집필 러너 (Node)
 ```
+
+## pnpm 워크플로 (`pnpm concept` / `design` / `dev`)
+
+저장소 루트에 `package.json`이 있습니다. **pnpm**으로 설치 후:
+
+| 명령 | 설명 |
+|------|------|
+| `pnpm concept` | `concept.md`를 읽고, `node_modules` 등을 제외한 **모든 `.md`**를 컨셉에 맞게 갱신 (기본: `design/` 제외, `CONCEPT_INCLUDE_DESIGN=1`로 포함) |
+| `pnpm design` | `concept.md`만을 근거로 `design/00-goals.md`, `01-plan.md`, `02-langchain-brief.md` 생성 (LangChain 에이전트용 계획·목표) |
+| `pnpm dev` | `design/**/*.md`를 `DESIGN_DIR`로 주입하고 **`novel-agent`** LangGraph 러너 실행 (`novel-agent/.env`에 `NOVEL_ROOT`, `GO_FILE` 필요) |
+
+```bash
+pnpm install
+# concept.md 작성 후
+pnpm concept
+pnpm design
+# novel-agent/.env 설정 후
+pnpm dev
+```
+
+## LangGraph 자율 집필 (`novel-agent/`)
+
+`ai_template`와 비슷하게 **go.md 태스크**를 순차 실행하고, **AUTO_RESTART**로 세션을 넘겨 장편을 이어 씁니다. Worker는 **Claude / Gemini / Codex CLI**로 로컬에서 돌며, `NOVEL_ROOT`의 `novel-brain.json`·`manuscript/`·스킬 `SKILL.md` 발췌를 프롬프트에 주입합니다.
+
+**45만 자 이상**을 노리면 기본값(`TARGET_MIN_CHARS=450000`, `TYPICAL_CHAPTER_CHARS=10000`)으로 약 **45챕터 분량**의 태스크가 생성됩니다. `npm run generate-tasks`로 `go.md`의 `###` 목록을 재계산합니다.
+
+```bash
+cd novel-agent
+npm install
+copy .env.example .env   # Windows: NOVEL_ROOT, GO_FILE, WORKER_AI 등 설정
+npm run init-novel -- ../path/to/my-novel
+# .env: NOVEL_ROOT=../path/to/my-novel, GO_FILE=../path/to/my-novel/go.md
+npm run generate-tasks
+npm start
+npm run stats -- --novel-root ../path/to/my-novel
+```
+
+## GitHub Copilot
+
+VS Code·GitHub에서 Copilot을 쓸 때는 저장소 루트의 **`.github/copilot-instructions.md`** 가 자동 컨텍스트로 붙는다. 슬래시 명령 없이도 `SKILL.md`와 동일한 집필 원칙·구조를 따르도록 정리되어 있다.
 
 ## 사용법
 

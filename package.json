@@ -1,0 +1,16 @@
+{
+  "name": "claude-novel-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "con": "node scripts/concept.js",
+    "design": "node scripts/design.js",
+    "dev": "node scripts/dev.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "glob": "^11.0.0"
+  }
+}
