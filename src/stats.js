@@ -11,7 +11,7 @@ import { REPO_ROOT } from './loadEnv.js';
 async function main() {
   const novelRoot = process.argv.includes('--novel-root')
     ? process.argv[process.argv.indexOf('--novel-root') + 1]
-    : process.env.NOVEL_ROOT ?? './my-novel';
+    : process.env.NOVEL_ROOT ?? '.';
 
   const root = path.isAbsolute(novelRoot) ? novelRoot : path.resolve(REPO_ROOT, novelRoot);
   const pattern = path.join(root, 'manuscript', '**/*.md').split(path.sep).join('/');
