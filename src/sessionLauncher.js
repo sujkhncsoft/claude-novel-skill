@@ -39,6 +39,7 @@ export function launchNextSession({ sessionNumber = 1, delayMs = 2000 } = {}) {
       }
     });
 
-    process.exit(0);
+    // Windows 환경에서 부모를 즉시 종료하면 자식 프로세스가 같이 종료될 수 있다.
+    // 부모를 유지해 자식 세션이 실제로 실행/출력되도록 둔다.
   }, delayMs);
 }
