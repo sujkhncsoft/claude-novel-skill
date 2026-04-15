@@ -2,6 +2,7 @@
  * 장편 소설 자율 집필 — 진입점 (LangGraph + go.md + novel 번들)
  */
 
+import fs from 'fs/promises';
 import path from 'path';
 import { REPO_ROOT } from './loadEnv.js';
 import { buildGraph } from './graph.js';
@@ -13,6 +14,7 @@ import { writeGoProgress, getNextSessionNumber } from './goWriter.js';
 import { launchNextSession } from './sessionLauncher.js';
 import { getConfigSummary, getWorkerIterations } from './agentConfig.js';
 import { HumanMessage } from '@langchain/core/messages';
+import { validateDesignResultGoals } from './statsReport.js';
 
 async function main() {
   const goRaw = process.env.GO_FILE ?? './go.md';
@@ -37,6 +39,7 @@ async function main() {
   const novelBundle = await loadNovelBundle({ cwd: process.cwd() });
   let augmentedGoContent = augmentGoContent(goData.userContent, designBundle);
   augmentedGoContent = augmentNovelContent(augmentedGoContent, novelBundle);
+  augmentedGoContent = await appendConceptMd(augmentedGoContent);
 
   console.log(`📄 go.md: ${goData.filePath}`);
   if (process.env.NOVEL_ROOT) {
@@ -62,7 +65,23 @@ async function main() {
   const pendingTasks = goData.pendingTasks;
 
   if (pendingTasks.length === 0) {
-    console.log('\n✅ go.md의 모든 태스크가 완료되었습니다.');
+    const goals = await validateDesignResultGoals(process.env.NOVEL_ROOT ?? '.');
+    if (!goals.ok) {
+      console.error(`\n[Main] 완료로 표시돼 있으나 측정 목표 미달: ${goals.summary}`);
+      console.error('   go.md 진행 상황을 미완료로 되돌립니다. 이어서 `pnpm dev` 로 집필을 재개하세요.\n');
+      await writeGoProgress({
+        goFilePath,
+        completedTasks: [],
+        pendingTasks: goData.tasks,
+        allTasks: goData.tasks,
+        changedFiles: [],
+        contextMonitor,
+        exitReason: '측정 목표 미달 — 완료 표기 복구',
+        sessionNumber,
+      });
+      process.exit(1);
+    }
+    console.log('\n✅ go.md의 모든 태스크가 완료되었고, 측정 목표도 충족됩니다.');
     console.log('   새로운 작업을 추가하려면 go.md를 수정하세요.');
     process.exit(0);
   }
@@ -98,17 +117,36 @@ async function main() {
 
   const result = await graph.invoke(initialState, { recursionLimit });
 
-  const finalCompleted = result.completedTasks ?? [];
-  const finalPending = result.pendingTasks ?? [];
+  const goals = await validateDesignResultGoals(process.env.NOVEL_ROOT ?? '.');
+
+  let finalCompleted = result.completedTasks ?? [];
+  let finalPending = result.pendingTasks ?? [];
+  let revertedDueToGoals = false;
+
+  if (finalPending.length === 0 && !goals.ok) {
+    revertedDueToGoals = true;
+    console.error(`\n[Main] 측정 목표 미달 — 세션에서 완료 처리된 태스크를 되돌립니다.\n   ${goals.summary}`);
+    finalCompleted = previouslyCompleted;
+    finalPending = goData.tasks.filter((t) => !previouslyCompleted.includes(t));
+  }
+
   const handoffTriggered = result.handoffTriggered ?? false;
 
-  printResult({ handoffTriggered, finalCompleted, finalPending, changedFiles: result.changedFiles });
+  printResult({
+    handoffTriggered,
+    finalCompleted,
+    finalPending,
+    changedFiles: result.changedFiles,
+    revertedDueToGoals,
+  });
 
   const exitReason = handoffTriggered
     ? '컨텍스트 토큰 임계치 도달'
-    : finalPending.length === 0
-      ? '모든 태스크 완료'
-      : '정상 종료';
+    : revertedDueToGoals
+      ? '측정 목표 미달 — 태스크 상태 되돌림'
+      : finalPending.length === 0
+        ? '모든 태스크 완료'
+        : '정상 종료';
 
   await writeGoProgress({
     goFilePath,
@@ -126,9 +164,11 @@ async function main() {
   if (hasMoreWork && autoRestart) {
     console.log(`\n[Main] 남은 태스크 ${finalPending.length}개 → 새 세션 자동 시작`);
     launchNextSession({ sessionNumber: sessionNumber + 1, delayMs: 3000 });
-  } else if (!hasMoreWork) {
+  } else if (!hasMoreWork && !revertedDueToGoals) {
     console.log('\n🎉 go.md의 모든 태스크를 완료했습니다!');
-    console.log('   `pnpm run stats` 로 원고 글자 수를 확인하세요.');
+    console.log('   `pnpm run stats` 로 result/NNNN.md 분량을 확인하세요.');
+  } else if (revertedDueToGoals) {
+    console.log('\n[Main] `pnpm dev` 또는 `pnpm start` 를 다시 실행해 남은 태스크를 이어서 진행하세요.');
   } else {
     console.log('\n[Main] AUTO_RESTART=false — 자동 재시작 비활성화');
     console.log('   pnpm start를 다시 실행하면 남은 태스크를 이어서 진행합니다.');
@@ -142,10 +182,12 @@ function printBanner(sessionNumber) {
   console.log('╚═══════════════════════════════════════════════════╝\n');
 }
 
-function printResult({ handoffTriggered, finalCompleted, finalPending, changedFiles }) {
+function printResult({ handoffTriggered, finalCompleted, finalPending, changedFiles, revertedDueToGoals }) {
   console.log('\n╔═══════════════════════════════════════════════════╗');
   if (handoffTriggered) {
     console.log('║   ⚠️  컨텍스트 한도 도달 — go.md 기록 후 재시작   ║');
+  } else if (revertedDueToGoals) {
+    console.log('║   ⚠️  측정 목표 미달 — 태스크 되돌림, 재실행 필요  ║');
   } else if (finalPending.length === 0) {
     console.log('║   ✅ 모든 태스크 완료!                            ║');
   } else {
@@ -161,6 +203,21 @@ function printResult({ handoffTriggered, finalCompleted, finalPending, changedFi
   console.log(`\n완료 태스크 (${finalCompleted.length}): ${finalCompleted.join(', ') || '없음'}`);
   console.log(`남은 태스크 (${finalPending.length}):   ${finalPending.join(', ') || '없음'}`);
   console.log(`변경 파일: ${(changedFiles ?? []).join(', ') || '없음'}`);
+}
+
+/**
+ * 루트 concept.md를 Worker 컨텍스트에 합친다. INCLUDE_CONCEPT_MD=false 로 끌 수 있다.
+ */
+async function appendConceptMd(base) {
+  if (process.env.INCLUDE_CONCEPT_MD === 'false') return base;
+  const rel = process.env.CONCEPT_FILE ?? 'concept.md';
+  const p = path.isAbsolute(rel) ? rel : path.join(REPO_ROOT, rel);
+  try {
+    const text = await fs.readFile(p, 'utf-8');
+    return `${base}\n\n---\n\n## concept.md (프로젝트 컨셉)\n\n${text}`;
+  } catch {
+    return base;
+  }
 }
 
 main().catch((err) => {

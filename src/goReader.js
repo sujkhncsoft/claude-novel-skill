@@ -105,5 +105,5 @@ export function getCompletionKeyword(taskName) {
   const numberedEn = taskName.match(/^task\s*(\d+)/i);
   if (numberedEn) return `task${numberedEn[1]} complete`;
 
-  return `${taskName.slice(0, 20)} 완료`;
+  return `${taskName} 완료`;
 }

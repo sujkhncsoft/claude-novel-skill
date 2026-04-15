@@ -30,7 +30,8 @@ export function getAgentRunner(agent) {
 }
 
 export function getWorkerIterations() {
-  return Number(process.env.WORKER_ITERATIONS ?? 1);
+  /** 한 태스크당 worker CLI 최대 호출 횟수(미완료 시 같은 태스크 유지). 기본 1은 거짓 완료를 유발하므로 상향 */
+  return Number(process.env.WORKER_ITERATIONS ?? 12);
 }
 
 export function getConfigSummary() {
