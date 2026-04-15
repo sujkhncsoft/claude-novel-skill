@@ -2,7 +2,7 @@
  * concept.md 를 읽고, 저장소 내 마크다운 문서를 컨셉에 맞게 갱신합니다.
  * pnpm concept
  *
- * 환경: CONCEPT_AI (claude|gemini|codex|copilot, 기본 claude)
+ * 환경: CONCEPT_AI (claude|gemini|codex|agent|copilot, 기본 claude)
  *       CONCEPT_LIMIT — 처리할 최대 파일 수 (기본 무제한, 숫자)
  *       CONCEPT_DRY_RUN=1 — 파일 쓰기 없이 로그만
  */

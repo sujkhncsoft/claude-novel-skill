@@ -5,7 +5,9 @@
 import {
   runClaude as runClaudeAi,
   runCodex as runCodexAi,
+  runAgent as runAgentAi,
   runGemini as runGeminiAi,
+  runCopilot as runCopilotAi,
   runOllama as runOllamaAi,
 } from '../scripts/lib/aiCli.js';
 
@@ -22,6 +24,14 @@ export function runGemini(prompt, timeoutMs = CLI_TIMEOUT_MS) {
 
 export function runCodex(prompt, timeoutMs = CLI_TIMEOUT_MS) {
   return runCodexAi(prompt, CWD, timeoutMs);
+}
+
+export function runAgent(prompt, timeoutMs = CLI_TIMEOUT_MS) {
+  return runAgentAi(prompt, CWD, timeoutMs);
+}
+
+export function runCopilot(prompt, timeoutMs = CLI_TIMEOUT_MS) {
+  return runCopilotAi(prompt, CWD, timeoutMs);
 }
 
 export function runOllama(prompt, timeoutMs = 300_000, model) {

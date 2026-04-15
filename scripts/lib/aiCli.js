@@ -83,7 +83,11 @@ function envWithNpmGlobalPath(base) {
   const extra = [];
   if (env.NVM_SYMLINK) extra.push(env.NVM_SYMLINK);
   if (env.APPDATA) extra.push(path.join(env.APPDATA, 'npm'));
-  if (env.LOCALAPPDATA) extra.push(path.join(env.LOCALAPPDATA, 'npm'));
+  if (env.LOCALAPPDATA) {
+    extra.push(path.join(env.LOCALAPPDATA, 'npm'));
+    // Cursor Agent CLI (`agent.cmd`), 터미널 PATH 와 달리 spawn 자식에 빠지는 경우가 많음
+    extra.push(path.join(env.LOCALAPPDATA, 'cursor-agent'));
+  }
   const pf = env.ProgramFiles || process.env.ProgramFiles;
   if (pf) extra.push(path.join(pf, 'nodejs'));
   if (extra.length === 0) return env;
@@ -289,8 +293,75 @@ export async function runCodex(prompt, cwd, timeoutMs = CLI_TIMEOUT_MS) {
 }
 
 /**
+ * Agent CLI
+ * - 기본: **Cursor Agent** (`agent -p --yolo --trust --output-format text`, stdin 프롬프트)
+ * - Codex 호환 CLI만 쓸 때: `AGENT_CODEX_COMPAT=1` → `exec --full-auto --skip-git-repo-check -`
+ * `AGENT_CLI` 로 실행 파일 지정 (기본 `agent`).
+ */
+export async function runAgent(prompt, cwd, timeoutMs = CLI_TIMEOUT_MS) {
+  const codexCompat =
+    process.env.AGENT_CODEX_COMPAT === '1' || process.env.AGENT_CODEX_COMPAT === 'true';
+  console.log(
+    `[CLI] agent 실행 중... (프롬프트 → 임시 파일 → stdin)${codexCompat ? ' [CODEX 호환]' : ' [Cursor Agent]'}`
+  );
+  const bin = (process.env.AGENT_CLI ?? 'agent').trim() || 'agent';
+  const env = envWithNpmGlobalPath({ ...process.env, FORCE_COLOR: '0' });
+
+  if (codexCompat) {
+    if (process.platform === 'win32') {
+      return pipePromptFileToSpawn({
+        prompt,
+        command: pathToWindowsCmdExe(),
+        args: ['/c', bin, 'exec', '--full-auto', '--skip-git-repo-check', '-'],
+        cwd,
+        env,
+        label: 'agent',
+        timeoutMs,
+        collectOutput,
+      });
+    }
+    return pipePromptFileToSpawn({
+      prompt,
+      command: bin,
+      args: ['exec', '--full-auto', '--skip-git-repo-check', '-'],
+      cwd,
+      env,
+      label: 'agent',
+      timeoutMs,
+      collectOutput,
+    });
+  }
+
+  const cursorArgs = ['-p', '--yolo', '--trust', '--output-format', 'text'];
+  if (process.platform === 'win32') {
+    return pipePromptFileToSpawn({
+      prompt,
+      command: pathToWindowsCmdExe(),
+      args: ['/c', bin, ...cursorArgs],
+      cwd,
+      env,
+      label: 'agent',
+      timeoutMs,
+      collectOutput,
+    });
+  }
+  return pipePromptFileToSpawn({
+    prompt,
+    command: bin,
+    args: cursorArgs,
+    cwd,
+    env,
+    label: 'agent',
+    timeoutMs,
+    collectOutput,
+  });
+}
+
+/**
  * GitHub Copilot CLI (`npm i -g @github/copilot`)
  * `COPILOT_CLI` 로 실행 파일 지정 가능.
+ * 비대화형 실행 시 `/login` 세션과 달리 토큰이 필요할 수 있음 → `.env`에
+ * `COPILOT_GITHUB_TOKEN` 또는 `GH_TOKEN` / `GITHUB_TOKEN` (Copilot CLI 안내와 동일).
  */
 export async function runCopilot(prompt, cwd, timeoutMs = CLI_TIMEOUT_MS) {
   console.log('[CLI] copilot 실행 중... (프롬프트 → 임시 파일 → stdin)');
@@ -356,11 +427,12 @@ const RUNNERS = {
   claude: runClaude,
   gemini: runGemini,
   codex: runCodex,
+  agent: runAgent,
   copilot: runCopilot,
 };
 
 /**
- * @param {string} which claude | gemini | codex | copilot
+ * @param {string} which claude | gemini | codex | agent | copilot
  * @param {string} prompt
  * @param {string} cwd
  */

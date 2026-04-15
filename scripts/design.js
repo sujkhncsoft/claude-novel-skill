@@ -4,15 +4,15 @@
  *
  * 생성 순서 (의존성 반영):
  *   03-characters.md      — 주인공·핵심 조연·대립 축
- *   04-chapters-outline.md — 제1장~제N장(기본 13) 장별 주제·사건·복선
+ *   04-chapters-outline.md — 제1장~제N장(기본 20) 장별 주제·사건·복선
  *   00-goals.md           — 분량·품질 목표 (위 설계와 정합)
  *   01-plan.md            — 실행 계획 (위 설계 경로 명시)
  *   02-langchain-brief.md — go.md / Worker 가 설계를 어떻게 쓰는지
  *
  * 마지막에 go.md 를 design/*.md 로 재생성합니다.
  *
- * 환경: DESIGN_AI (claude|gemini|codex|copilot)
- *       DESIGN_CHAPTER_COUNT — 장 개요 장 수 (기본 13)
+ * 환경: DESIGN_AI (claude|gemini|codex|agent|copilot)
+ *       DESIGN_CHAPTER_COUNT — 장 개요 장 수 (기본 20)
  */
 
 import fs from 'fs/promises';
@@ -33,7 +33,7 @@ const DESIGN_DIR = path.join(ROOT, 'design');
 const AI = process.env.DESIGN_AI ?? process.env.CONCEPT_AI ?? 'claude';
 const CHAPTER_COUNT = Math.max(
   1,
-  Math.min(99, Number(process.env.DESIGN_CHAPTER_COUNT ?? 13) || 13)
+  Math.min(99, Number(process.env.DESIGN_CHAPTER_COUNT ?? 20) || 20)
 );
 
 /**

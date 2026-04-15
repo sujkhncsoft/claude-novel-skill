@@ -5,7 +5,9 @@
 const LIMITS = {
   gemini: 1_048_576,
   codex: 128_000,
+  agent: 128_000,
   claude: 200_000,
+  copilot: 128_000,
   ollama: 131_072,
 };
 
@@ -16,7 +18,9 @@ class ContextMonitor {
     this.usage = {
       gemini: 0,
       codex: 0,
+      agent: 0,
       claude: 0,
+      copilot: 0,
       ollama: 0,
     };
   }

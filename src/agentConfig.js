@@ -2,12 +2,14 @@
  * 에이전트별 AI CLI 설정
  */
 
-import { runClaude, runCodex, runGemini } from './cliRunner.js';
+import { runClaude, runCodex, runAgent, runGemini, runCopilot } from './cliRunner.js';
 
 const RUNNERS = {
   claude: runClaude,
   codex: runCodex,
+  agent: runAgent,
   gemini: runGemini,
+  copilot: runCopilot,
 };
 
 function normalizeAi(value, fallback) {
