@@ -42,6 +42,10 @@ function isWritingTask(name) {
   return /집필|작성/.test(name) && !isVerificationTask(name);
 }
 
+function getProgressTotal(progress) {
+  return progress?.report?.totalChars ?? 0;
+}
+
 export async function workerAgentNode(state) {
   const { ai, run } = getAgentRunner('worker');
   const pendingTasks = state.pendingTasks ?? [];
@@ -60,6 +64,10 @@ export async function workerAgentNode(state) {
   console.log(`\n[WorkerAgent] ${ai} CLI — 태스크 실행 (${workerCount}/${workerIterations} 회차)`);
   console.log(`[WorkerAgent] 현재 태스크: "${currentTask}"`);
   console.log(`[WorkerAgent] 완료 키워드: "${completionKeyword}"`);
+
+  const novelRoot = process.env.NOVEL_ROOT ?? '.';
+  const minWritingDelta = Number(process.env.MIN_WRITING_PROGRESS_CHARS ?? 500);
+  const writingProgressBefore = isWritingTask(currentTask) ? await hasResultChapterProgress(novelRoot, 0) : null;
 
   const recentContext = (state.messages ?? [])
     .slice(-4)
@@ -90,7 +98,6 @@ export async function workerAgentNode(state) {
   const { text: output, usedFallback } = await withOllamaFallback(run, ai, prompt);
   contextMonitor.update(usedFallback ? 'ollama' : ai, [{ content: output }], `${prompt}\n\n${output}`);
 
-  const novelRoot = process.env.NOVEL_ROOT ?? '.';
   let isCompleted = false;
 
   if (isVerificationTask(currentTask)) {
@@ -101,9 +108,17 @@ export async function workerAgentNode(state) {
     const keywordMatch = output.toLowerCase().includes(completionKeyword.toLowerCase());
     if (isWritingTask(currentTask)) {
       const progress = await hasResultChapterProgress(novelRoot);
-      isCompleted = Boolean(keywordMatch && progress.ok);
+      const beforeTotal = getProgressTotal(writingProgressBefore);
+      const afterTotal = getProgressTotal(progress);
+      const delta = afterTotal - beforeTotal;
+      isCompleted = Boolean(keywordMatch && progress.ok && delta >= minWritingDelta);
       if (!progress.ok) console.log(`[WorkerAgent] 집필 산출물: ${progress.reason}`);
       if (!keywordMatch) console.log(`[WorkerAgent] 완료 문구 미포함 — 정확히 "${completionKeyword}" 출력 필요`);
+      if (delta < minWritingDelta) {
+        console.log(
+          `[WorkerAgent] 집필 분량 증가 부족: +${delta.toLocaleString()}자 (최소 +${minWritingDelta.toLocaleString()}자 필요)`
+        );
+      }
     } else {
       isCompleted = keywordMatch;
     }
@@ -122,9 +137,19 @@ export async function workerAgentNode(state) {
   const filePattern = /(?:created?|wrote?|saved?|생성|저장|수정)\s*[:\s]*([^\s,\n]+\.[a-zA-Z0-9]+)/gi;
   const detectedFiles = [...output.matchAll(filePattern)].map((m) => m[1]);
 
-  const newCompletedTasks = isCompleted ? [...completedTasks, currentTask] : completedTasks;
+  let newCompletedTasks = isCompleted ? [...completedTasks, currentTask] : completedTasks;
+  let newPendingTasks = isCompleted ? pendingTasks.slice(1) : pendingTasks;
 
-  const newPendingTasks = isCompleted ? pendingTasks.slice(1) : pendingTasks;
+  if (isVerificationTask(currentTask) && !isCompleted) {
+    const latestWritingTask = [...completedTasks].reverse().find((t) => isWritingTask(t));
+    if (latestWritingTask && !newPendingTasks.includes(latestWritingTask)) {
+      newCompletedTasks = completedTasks.filter((t) => t !== latestWritingTask);
+      newPendingTasks = [latestWritingTask, ...newPendingTasks];
+      console.log(
+        `[WorkerAgent] 검증 실패로 집필 태스크 재오픈: "${latestWritingTask}" -> 검증 전에 다시 실행`
+      );
+    }
+  }
 
   if (isCompleted) {
     console.log(`[WorkerAgent] 태스크 완료: "${currentTask}"`);
