@@ -1,5 +1,5 @@
 /**
- * 루트 스크립트용 AI CLI (novel-agent/cliRunner 와 동일 패턴)
+ * 루트 스크립트용 AI CLI (src/cliRunner.js 와 동일 패턴)
  */
 
 import fs from 'fs/promises';

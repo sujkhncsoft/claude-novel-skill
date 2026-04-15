@@ -2,8 +2,8 @@
  * 장편 소설 자율 집필 — 진입점 (LangGraph + go.md + novel 번들)
  */
 
-import 'dotenv/config';
 import path from 'path';
+import { REPO_ROOT } from './loadEnv.js';
 import { buildGraph } from './graph.js';
 import { readGoFile } from './goReader.js';
 import { loadDesignBundle, augmentGoContent } from './designBundle.js';
@@ -15,7 +15,8 @@ import { getConfigSummary, getWorkerIterations } from './agentConfig.js';
 import { HumanMessage } from '@langchain/core/messages';
 
 async function main() {
-  const goFilePath = process.env.GO_FILE ?? './go.md';
+  const goRaw = process.env.GO_FILE ?? './go.md';
+  const goFilePath = path.isAbsolute(goRaw) ? goRaw : path.resolve(REPO_ROOT, goRaw);
   const autoRestart = process.env.AUTO_RESTART !== 'false';
   const recursionLimit = Number(process.env.RECURSION_LIMIT ?? 5000);
 
@@ -31,17 +32,23 @@ async function main() {
     process.exit(1);
   }
 
-  const designBundle = await loadDesignBundle({ cwd: process.cwd() });
+  const skipDesignBundle = goData.userContent.includes('<!-- generated-from-design:');
+  const designBundle = skipDesignBundle ? '' : await loadDesignBundle();
   const novelBundle = await loadNovelBundle({ cwd: process.cwd() });
   let augmentedGoContent = augmentGoContent(goData.userContent, designBundle);
   augmentedGoContent = augmentNovelContent(augmentedGoContent, novelBundle);
 
   console.log(`📄 go.md: ${goData.filePath}`);
   if (process.env.NOVEL_ROOT) {
-    console.log(`📁 NOVEL_ROOT: ${path.resolve(process.cwd(), process.env.NOVEL_ROOT)}`);
+    const nr = process.env.NOVEL_ROOT;
+    console.log(`📁 NOVEL_ROOT: ${path.isAbsolute(nr) ? nr : path.resolve(REPO_ROOT, nr)}`);
   }
   if (process.env.DESIGN_DIR) {
-    console.log(`📁 DESIGN_DIR: ${path.resolve(process.cwd(), process.env.DESIGN_DIR)}`);
+    const dr = process.env.DESIGN_DIR;
+    const d = path.isAbsolute(dr) ? dr : path.resolve(REPO_ROOT, dr);
+    console.log(
+      skipDesignBundle ? `📁 DESIGN_DIR: ${d} (본문은 go.md에 포함, 자동 번들 생략)` : `📁 DESIGN_DIR: ${d}`
+    );
   }
   console.log(`📋 프로젝트: ${goData.title}`);
   console.log(`📝 전체 태스크: ${goData.tasks.length}개`);
@@ -121,10 +128,10 @@ async function main() {
     launchNextSession({ sessionNumber: sessionNumber + 1, delayMs: 3000 });
   } else if (!hasMoreWork) {
     console.log('\n🎉 go.md의 모든 태스크를 완료했습니다!');
-    console.log('   `npm run stats` 로 원고 글자 수를 확인하세요.');
+    console.log('   `pnpm run stats` 로 원고 글자 수를 확인하세요.');
   } else {
     console.log('\n[Main] AUTO_RESTART=false — 자동 재시작 비활성화');
-    console.log('   npm start를 다시 실행하면 남은 태스크를 이어서 진행합니다.');
+    console.log('   pnpm start를 다시 실행하면 남은 태스크를 이어서 진행합니다.');
   }
 }
 

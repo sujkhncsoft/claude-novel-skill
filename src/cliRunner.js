@@ -7,7 +7,7 @@ import {
   runCodex as runCodexAi,
   runGemini as runGeminiAi,
   runOllama as runOllamaAi,
-} from '../../scripts/lib/aiCli.js';
+} from '../scripts/lib/aiCli.js';
 
 const CWD = process.cwd();
 const CLI_TIMEOUT_MS = Number(process.env.CLI_TIMEOUT_MS ?? 600_000);

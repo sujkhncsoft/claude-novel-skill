@@ -5,6 +5,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { REPO_ROOT } from './loadEnv.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -32,7 +33,7 @@ export async function resolveSkillRoot(cwd) {
       dir = parent;
     }
   }
-  return path.resolve(__dirname, '../..');
+  return path.resolve(__dirname, '..');
 }
 
 /**
@@ -45,7 +46,9 @@ export async function loadNovelBundle({ cwd }) {
     return '';
   }
 
-  const resolvedNovel = path.resolve(cwd, novelRoot);
+  const resolvedNovel = path.isAbsolute(novelRoot)
+    ? novelRoot
+    : path.resolve(REPO_ROOT, novelRoot);
   const skillRoot = await resolveSkillRoot(cwd);
 
   const chunks = [];

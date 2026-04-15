@@ -1,18 +1,20 @@
 /**
- * DESIGN_DIR 마크다운 번들 (ai_template 와 동일)
+ * DESIGN_DIR 이하 마크다운을 glob 으로 모아 go.md 컨텍스트에 붙입니다.
+ * 기본 DESIGN_GLOB 은 모든 하위 폴더의 .md 파일을 포함합니다(환경변수 미설정 시 코드 기본값 참고).
  */
 
 import fs from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
+import { REPO_ROOT } from './loadEnv.js';
 
-export async function loadDesignBundle({ cwd }) {
+export async function loadDesignBundle() {
   const raw = process.env.DESIGN_DIR;
   if (raw === undefined || raw === '') {
     return '';
   }
 
-  const resolved = path.resolve(cwd, raw);
+  const resolved = path.isAbsolute(raw) ? raw : path.resolve(REPO_ROOT, raw);
   let stat;
   try {
     stat = await fs.stat(resolved);

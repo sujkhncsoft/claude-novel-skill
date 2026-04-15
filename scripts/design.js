@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { runAi, withOllamaFallback } from './lib/aiCli.js';
 import { stripLeadingFence } from './lib/markdown.js';
+import { generateGoFromDesign } from './genGoFromDesign.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -36,7 +37,7 @@ const SPECS = [
   {
     file: '02-langchain-brief.md',
     instruction:
-      '`novel-agent`(go.md + LangGraph + Worker CLI)가 **실제로 수행할 작업**을 구체화하세요.\n' +
+      '저장소 루트의 집필 러너(go.md + LangGraph + Worker CLI)가 **실제로 수행할 작업**을 구체화하세요.\n' +
       '- Supervisor/Worker 역할\n' +
       '- go.md 태스크를 어떻게 쪼길지\n' +
       '- DESIGN_DIR 문서를 어떻게 참조할지\n' +
@@ -71,7 +72,10 @@ async function main() {
     await fs.writeFile(dest, `${out.trim()}\n`, 'utf-8');
   }
 
+  const goFile = path.join(ROOT, 'go.md');
+  await generateGoFromDesign({ root: ROOT, designDir: DESIGN_DIR, goFilePath: goFile });
   console.log(`\n[design] 완료 → ${DESIGN_DIR}`);
+  console.log(`[design] go.md 생성 → ${goFile}`);
 }
 
 main().catch((e) => {

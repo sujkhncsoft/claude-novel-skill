@@ -4,6 +4,7 @@
 
 import path from 'path';
 import { AIMessage } from '@langchain/core/messages';
+import { REPO_ROOT } from '../loadEnv.js';
 import { withOllamaFallback } from '../cliRunner.js';
 import { getAgentRunner } from '../agentConfig.js';
 import { contextMonitor } from '../contextMonitor.js';
@@ -13,7 +14,11 @@ function novelPreamble() {
   const novelRoot = process.env.NOVEL_ROOT ?? '';
   const targetMin = Number(process.env.TARGET_MIN_CHARS ?? 450_000);
   const chapterGuide = Number(process.env.TYPICAL_CHAPTER_CHARS ?? 10_000);
-  const abs = novelRoot ? path.resolve(process.cwd(), novelRoot) : '(NOVEL_ROOT 미설정)';
+  const abs = novelRoot
+    ? path.isAbsolute(novelRoot)
+      ? novelRoot
+      : path.resolve(REPO_ROOT, novelRoot)
+    : '(NOVEL_ROOT 미설정)';
 
   return (
     `【소설 자율 집필 모드】\n` +

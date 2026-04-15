@@ -1,8 +1,8 @@
 /**
  * 새 소설 프로젝트 폴더를 스킬 템플릿으로 초기화합니다.
  *
- * 사용: npm run init-novel -- ../path/to/my-novel
- * 또는: NOVEL_OUT=./my-novel npm run init-novel
+ * 사용: pnpm run init-novel -- ../path/to/my-novel
+ * 또는: NOVEL_OUT=./my-novel pnpm run init-novel
  */
 
 import fs from 'fs/promises';
@@ -32,7 +32,7 @@ async function main() {
     argPath ?? process.env.NOVEL_OUT ?? './my-novel'
   );
 
-  const skillRoot = path.resolve(__dirname, '../..');
+  const skillRoot = path.resolve(__dirname, '..');
   const templateRoot = path.join(skillRoot, 'references', 'templates', 'project');
   const brainSrc = path.join(skillRoot, 'references', 'novel-brain.json');
 
@@ -51,12 +51,12 @@ async function main() {
   const goMd = [
     '# 새 소설 프로젝트',
     '',
-    '> novel-agent 폴더에서 `npm run generate-tasks` 를 실행하면 이 파일의 태스크 목록이 목표 글자 수에 맞게 채워집니다.',
+    '> 저장소 루트에서 `pnpm run generate-tasks` 를 실행하면 이 파일의 태스크 목록이 목표 글자 수에 맞게 채워집니다.',
     '> `.env` 의 `GO_FILE` 이 이 파일을 가리키는지 확인하세요.',
     '',
     '## 태스크',
     '',
-    '### (준비) novel-agent에서 generate-tasks 실행',
+    '### (준비) generate-tasks 실행',
     '',
   ].join('\n');
 
@@ -70,7 +70,7 @@ async function main() {
   await fs.writeFile(brainDest, brainRaw, 'utf-8');
 
   console.log(`[init-novel] 생성 완료: ${outDir}`);
-  console.log('다음: .env 에 NOVEL_ROOT 를 이 경로로 맞추고, novel-agent 폴더에서 npm run generate-tasks 후 npm start');
+  console.log('다음: .env 에 NOVEL_ROOT 를 이 경로로 맞추고, pnpm run generate-tasks 후 pnpm start');
 }
 
 main().catch((e) => {

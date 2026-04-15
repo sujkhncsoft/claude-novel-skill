@@ -5,12 +5,20 @@
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "con": "node scripts/concept.js",
+    "concept": "node scripts/concept.js",
     "design": "node scripts/design.js",
-    "dev": "node scripts/dev.js"
+    "dev": "node scripts/dev.js",
+    "start": "node src/index.js",
+    "watch": "node --watch src/index.js",
+    "init-novel": "node src/initProject.js",
+    "generate-tasks": "node src/generateTasks.js",
+    "stats": "node src/stats.js"
   },
   "dependencies": {
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0",
     "dotenv": "^16.4.5",
-    "glob": "^11.0.0"
+    "glob": "^11.0.0",
+    "zod": "^3.23.0"
   }
 }

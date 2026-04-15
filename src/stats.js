@@ -1,19 +1,19 @@
 /**
- * manuscript/**/*.md 글자 수 합계 (UTF-16 코드 유닛 ≈ JS .length, 한글 1글자 = 1)
+ * Collect character counts for markdown files under the manuscript directory.
+ * Uses JS string length (UTF-16 code units), which matches the project target metric.
  */
 
 import fs from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
-import 'dotenv/config';
+import { REPO_ROOT } from './loadEnv.js';
 
 async function main() {
-  const cwd = process.cwd();
   const novelRoot = process.argv.includes('--novel-root')
     ? process.argv[process.argv.indexOf('--novel-root') + 1]
     : process.env.NOVEL_ROOT ?? './my-novel';
 
-  const root = path.resolve(cwd, novelRoot);
+  const root = path.isAbsolute(novelRoot) ? novelRoot : path.resolve(REPO_ROOT, novelRoot);
   const pattern = path.join(root, 'manuscript', '**/*.md').split(path.sep).join('/');
 
   const files = await glob(pattern, { nodir: true, windowsPathsNoEscape: true });

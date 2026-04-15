@@ -8,7 +8,7 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import 'dotenv/config';
+import { REPO_ROOT } from './loadEnv.js';
 
 const SEPARATOR = '<!-- AUTO-GENERATED:';
 
@@ -52,12 +52,10 @@ function renderUserSection(title, introLines, taskStrings) {
 async function main() {
   const dryRun = process.argv.includes('--dry-run');
 
-  const cwd = process.cwd();
-  const goFile = process.env.GO_FILE ?? './go.md';
+  const goRaw = process.env.GO_FILE ?? './go.md';
+  const resolvedGo = path.isAbsolute(goRaw) ? goRaw : path.resolve(REPO_ROOT, goRaw);
   const targetMin = Number(process.env.TARGET_MIN_CHARS ?? 450_000);
   const chapterChars = Number(process.env.TYPICAL_CHAPTER_CHARS ?? 10_000);
-
-  const resolvedGo = path.resolve(cwd, goFile);
   let raw;
   try {
     raw = await fs.readFile(resolvedGo, 'utf-8');

@@ -25,8 +25,8 @@
 ## 코드·러너 (이 저장소의 기술 스택)
 
 - **패키지 매니저**: `pnpm` (루트 `package.json`).
-- **스크립트**: `pnpm concept` (`concept.md` 기준 문서 갱신), `pnpm design` (`design/` 계획 생성), `pnpm dev` (`novel-agent` LangGraph + `design/**/*.md` 주입).
-- **`novel-agent/`**: Node, LangGraph 기반 자율 집필 러너. 설정은 `novel-agent/.env`·`novel-agent/.env.example` 참고. `NOVEL_ROOT`, `GO_FILE` 등 환경 변수가 중요하다.
+- **스크립트**: `pnpm concept` (`concept.md` 기준 문서 갱신), `pnpm design` (`design/` 계획 생성), `pnpm dev` (`src/index.js` LangGraph + `design/**/*.md` 주입).
+- **`src/`**: Node, LangGraph 기반 자율 집필 러너. 설정은 저장소 루트 `.env`·`.env.example` 참고. `NOVEL_ROOT`, `GO_FILE` 등 환경 변수가 중요하다.
 
 코드 변경 시 기존 스타일·구조를 따르고, 불필요한 리팩터나 무관한 파일 수정은 피한다.
 

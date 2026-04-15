@@ -29,7 +29,6 @@ const IGNORE_GLOB = [
   '**/node_modules/**',
   '**/handoff/**',
   '**/.git/**',
-  '**/novel-agent/node_modules/**',
 ];
 
 function shouldSkipRel(rel) {
